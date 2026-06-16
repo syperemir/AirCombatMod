@@ -15,16 +15,19 @@ jobs:
           mkdir -p build/classes
           mkdir -p build/libs
           
-          # Скачиваем официальные библиотеки среды разработки и сам клиент игры
+          # Скачиваем абсолютно все библиотеки, которые требует код мода
           curl -Lo fabric-loader.jar https://fabricmc.net
           curl -Lo fabric-api.jar https://fabricmc.net || true
           curl -Lo minecraft.jar https://mojang.com
+          curl -Lo lwjgl.jar https://maven.org
+          curl -Lo lwjgl-glfw.jar https://maven.org
+          curl -Lo joml.jar https://maven.org
           
-          # Находим и компилируем файлы с поддержкой библиотек игры
+          # Компилируем файлы, подключая весь набор библиотек игры и движка
           find src/main/java -name "*.java" > sources.txt
-          javac -d build/classes -cp "fabric-loader.jar:fabric-api.jar:minecraft.jar" @sources.txt
+          javac -d build/classes -cp "fabric-loader.jar:fabric-api.jar:minecraft.jar:lwjgl.jar:lwjgl-glfw.jar:joml.jar" @sources.txt
           
-          # Копируем метаданные мода
+          # Копируем метаданные (fabric.mod.json)
           cp -r src/main/resources/* build/classes/ || true
           
           # Создаем финальный JAR файл мода
